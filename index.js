@@ -81,6 +81,16 @@ function expand(o, sepChar, defaultKey)
 			}
 		}
 	*/
+	
+	function isRecursibleObject(o)
+	{
+		// originally we did this, but this will recurse into (and expand)
+		// objects built with constructors, which we usually don't want.
+		//return typeof(o) == 'object' && ! Array.isArray(o);
+
+		return typeof(o) == 'object' && ! Array.isArray(o) && o.constructor==Object;
+	}
+	
 	function assign(o, k, v)
 	{
 		if( o.hasOwnProperty(k) ) {
@@ -111,7 +121,8 @@ function expand(o, sepChar, defaultKey)
 	
 	// do this recursively on all member objects
 	Object.keys(o2).forEach( k => {
-		if( typeof(o2[k]) == 'object' && ! Array.isArray(o2[k]) ) {
+		//if( typeof(o2[k]) == 'object' && ! Array.isArray(o2[k]) ) {
+		if( isRecursibleObject(o2[k]) ) {
 			o2[k] = expand(o2[k], sepChar, defaultKey);
 		}
 	});
